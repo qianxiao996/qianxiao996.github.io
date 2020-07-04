@@ -5,4 +5,10 @@ layout: about
 comments: false
 sidebar: custom
 ---
-个人详细介绍
+
+
+![1.jpg](pic01.jpg)
+
+qianxiao996
+
+一个网络小白
