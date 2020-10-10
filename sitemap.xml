@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://blog.qianxiao996.cn/tags/index.html</loc>
+    
+    <lastmod>2020-10-10T02:30:14.288Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.qianxiao996.cn/links/index.html</loc>
+    
+    <lastmod>2020-10-10T02:29:33.008Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.qianxiao996.cn/categories/index.html</loc>
+    
+    <lastmod>2020-10-10T02:29:19.686Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://blog.qianxiao996.cn/about/index.html</loc>
     
     <lastmod>2020-07-04T11:55:10.000Z</lastmod>
@@ -16,35 +37,14 @@
   </url>
   
   <url>
-    <loc>http://blog.qianxiao996.cn/books/index.html</loc>
-    
-    <lastmod>2020-07-04T08:47:02.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.qianxiao996.cn/categories/index.html</loc>
-    
-    <lastmod>2020-07-04T08:47:02.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.qianxiao996.cn/links/index.html</loc>
-    
-    <lastmod>2020-07-04T08:47:02.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.qianxiao996.cn/tags/index.html</loc>
-    
-    <lastmod>2020-07-04T08:47:02.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://blog.qianxiao996.cn/repository/index.html</loc>
+    
+    <lastmod>2020-07-04T08:47:02.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.qianxiao996.cn/books/index.html</loc>
     
     <lastmod>2020-07-04T08:47:02.000Z</lastmod>
     
